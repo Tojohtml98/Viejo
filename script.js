@@ -62,7 +62,20 @@ function calculateBallistics(velocity, weight, bc, distance, windSpeed, windAngl
     const timeOfFlight = distance / adjustedVelocity;
     
     // Caída por gravedad (fórmula simplificada)
-    const drop = (0.5 * g * Math.pow(timeOfFlight, 2) * 100) - dropAtZero; // Ajustada por la distancia de cero
+    // Si el objetivo está más lejos que la distancia de cero, la caída será positiva (hacia abajo)
+    // Si el objetivo está más cerca que la distancia de cero, la caída será negativa (hacia arriba)
+    let drop;
+    if (distance >= zeroDistance) {
+        // Objetivo más lejos que el cero: caída hacia abajo
+        const timeToTarget = distance / adjustedVelocity;
+        const dropAtTarget = 0.5 * g * Math.pow(timeToTarget, 2) * 100;
+        drop = dropAtTarget - dropAtZero;
+    } else {
+        // Objetivo más cerca que el cero: caída hacia arriba (corrección negativa)
+        const timeToTarget = distance / adjustedVelocity;
+        const dropAtTarget = 0.5 * g * Math.pow(timeToTarget, 2) * 100;
+        drop = dropAtTarget - dropAtZero;
+    }
     
     // Deriva por viento (fórmula simplificada)
     const windDrift = (crossWind * timeOfFlight) * 100; // Convertir a cm
@@ -96,6 +109,24 @@ function calculateBallistics(velocity, weight, bc, distance, windSpeed, windAngl
     };
 }
 
+// Función para establecer la distancia de cero
+function setZeroDistance(distance) {
+    document.getElementById('zeroDistance').value = distance;
+    // Recalcular automáticamente si ya hay datos
+    const velocity = parseFloat(document.getElementById('velocity').value);
+    if (!isNaN(velocity) && velocity > 0) {
+        calculateTrajectory();
+    }
+}
+
+// Función para recalcular automáticamente cuando cambie la distancia de cero
+function onZeroDistanceChange() {
+    const velocity = parseFloat(document.getElementById('velocity').value);
+    if (!isNaN(velocity) && velocity > 0) {
+        calculateTrajectory();
+    }
+}
+
 // Actualizar los resultados en la interfaz
 function updateResults(results) {
     document.getElementById('drop').textContent = results.drop.toFixed(1);
@@ -107,8 +138,17 @@ function updateResults(results) {
     // Mostrar información sobre el ajuste de cero
     const zeroDistance = parseFloat(document.getElementById('zeroDistance').value);
     const zeroInfo = document.getElementById('zeroInfo');
+    const verticalCorrection = document.getElementById('verticalCorrection');
+    
     if (zeroInfo) {
-        zeroInfo.textContent = `(Ajuste a ${zeroDistance}m: ${results.zeroDrop.toFixed(1)} cm)`;
+        zeroInfo.textContent = `Centro a ${zeroDistance}m`;
+    }
+    
+    if (verticalCorrection) {
+        // La corrección vertical es la diferencia entre la caída real y la caída ajustada por el cero
+        const targetDistance = parseFloat(document.getElementById('distance').value);
+        const correctionAtTarget = results.drop;
+        verticalCorrection.textContent = `${correctionAtTarget.toFixed(1)} cm`;
     }
 }
 
@@ -128,6 +168,7 @@ function updateChart(trajectory, zeroDistance) {
     trajectoryChart.data.labels = distances.map(d => d.toFixed(0));
     trajectoryChart.data.datasets[0].data = trajectory;
     trajectoryChart.data.datasets[1].data = sightLine;
+    trajectoryChart.data.datasets[1].label = `Línea de Mira (Cero a ${zeroDistance}m)`;
     
     // Actualizar el gráfico
     trajectoryChart.update();

@@ -55,7 +55,16 @@
                 
                 <div class="form-group">
                     <label for="zeroDistance">Distancia de Ajuste de Cero (metros):</label>
-                    <input type="number" id="zeroDistance" placeholder="Ej: 100" step="1" min="0" value="100">
+                    <input type="number" id="zeroDistance" placeholder="Ej: 100" step="1" min="0" value="100" onchange="onZeroDistanceChange()">
+                    <div class="zero-buttons">
+                        <button type="button" class="zero-btn" onclick="setZeroDistance(50)">50m</button>
+                        <button type="button" class="zero-btn" onclick="setZeroDistance(100)">100m</button>
+                        <button type="button" class="zero-btn" onclick="setZeroDistance(200)">200m</button>
+                        <button type="button" class="zero-btn" onclick="setZeroDistance(300)">300m</button>
+                    </div>
+                    <div class="zero-explanation">
+                        <small>La mira se ajustará para que el proyectil impacte en el centro a esta distancia</small>
+                    </div>
                 </div>
                 
                 <button onclick="calculateTrajectory()">Calcular Trayectoria</button>
@@ -87,7 +96,11 @@
                     </div>
                     <div class="result-item">
                         <span class="result-label">Ajuste de Cero:</span>
-                        <span id="zeroInfo" class="result-value">(Ajuste a 100m: 0.0 cm)</span>
+                        <span id="zeroInfo" class="result-value">Centro a 100m</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Corrección Vertical:</span>
+                        <span id="verticalCorrection" class="result-value">0.0 cm</span>
                     </div>
                 </div>
                 

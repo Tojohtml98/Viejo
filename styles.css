@@ -112,6 +112,45 @@ header h1 {
     margin-top: 5px;
 }
 
+/* Botones de distancia de cero */
+.zero-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+.zero-btn {
+    padding: 6px 12px;
+    background-color: var(--light-color);
+    color: var(--primary-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin: 0;
+    width: auto;
+    min-width: 50px;
+}
+
+.zero-btn:hover {
+    background-color: var(--secondary-color);
+    color: white;
+    border-color: var(--secondary-color);
+}
+
+.zero-btn:active {
+    transform: translateY(1px);
+}
+
+/* Explicación del ajuste de cero */
+.zero-explanation {
+    margin-top: 8px;
+    color: #666;
+    font-style: italic;
+}
+
 /* Botón de cálculo */
 button {
     display: block;
